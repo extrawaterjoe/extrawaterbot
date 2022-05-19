@@ -2,8 +2,13 @@
   "name": "extrawaterbot",
   "version": "1.0.0",
   "main": "app.js",
+  "type": "module",
   "license": "MIT",
   "dependencies": {
+    "node-fetch": "^3.2.4",
     "twitter-v2": "^1.1.0"
+  },
+  "devDependencies": {
+    "prettier": "2.6.2"
   }
 }
