@@ -12,9 +12,15 @@ const download = async (url, dest) => {
 }
 
 const fetchImg = async () => {
-  const res = await fetch("http://api.are.na/v2/channels/stujio")
+  const res = await fetch("http://api.are.na/v2/channels/stujio?page=1&per=1000")
   const data = await res.json()
-  download(data.contents[0].image.large.url, "./img/image0.jpg")
+  const rnd = Math.floor(Math.random() * data.contents.length)
+  const img = {
+    id: data.contents[rnd].id,
+    url: data.contents[rnd].image.large.url,
+  }
+  console.log(rnd)
+  download(img.url, `./img/${img.id}.jpg`)
 }
 
 fetchImg()
