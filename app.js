@@ -19,8 +19,18 @@ const fetchImg = async () => {
     id: data.contents[rnd].id,
     url: data.contents[rnd].image.large.url,
   }
-  console.log(rnd)
-  download(img.url, `./img/${img.id}.jpg`)
+  try {
+    const record = JSON.parse(fs.readFileSync("./record.json", "utf8"))
+    if (record.content.includes(img.id)) {
+      fetchImg()
+    } else {
+      download(img.url, `./img/${img.id}.jpg`)
+      record.content.push(img.id)
+      fs.writeFileSync("./record.json", JSON.stringify(record))
+    }
+  } catch (err) {
+    console.log(err)
+  }
 }
 
 fetchImg()
