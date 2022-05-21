@@ -6,6 +6,7 @@
   "license": "MIT",
   "dependencies": {
     "node-fetch": "^3.2.4",
+    "node-schedule": "^2.1.0",
     "twitter-v2": "^1.1.0"
   },
   "devDependencies": {

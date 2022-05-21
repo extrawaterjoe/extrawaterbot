@@ -1,5 +1,6 @@
 import fs from "fs"
 import fetch from "node-fetch"
+import schedule from "node-schedule"
 
 const download = async (url, dest) => {
   const res = await fetch(url)
@@ -33,4 +34,7 @@ const fetchImg = async () => {
   }
 }
 
-fetchImg()
+// run every 3 hrs
+schedule.scheduleJob("0 */3 * * *", () => {
+  fetchImg()
+})
