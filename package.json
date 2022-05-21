@@ -5,9 +5,11 @@
   "type": "module",
   "license": "MIT",
   "dependencies": {
+    "add": "^2.0.6",
+    "dotenv": "^16.0.1",
     "node-fetch": "^3.2.4",
     "node-schedule": "^2.1.0",
-    "twitter-v2": "^1.1.0"
+    "twitter-api-v2": "^1.12.1"
   },
   "devDependencies": {
     "prettier": "2.6.2"

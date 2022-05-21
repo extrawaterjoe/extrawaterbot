@@ -1,6 +1,25 @@
 import fs from "fs"
 import fetch from "node-fetch"
 import schedule from "node-schedule"
+import { TwitterApi } from 'twitter-api-v2'
+import "dotenv/config"
+
+const client = new TwitterApi({
+  appKey: process.env.APIKEY,
+  appSecret: process.env.APISECRET,
+  accessToken: process.env.ACCESSTOKEN,
+  accessSecret: process.env.ACCESSSECRET,
+})
+
+const tweet = async () => {
+  try {
+    await client.v2.tweet('yooo')
+  } catch (error) {
+    console.log(error)
+  }
+}
+
+tweet()
 
 const download = async (url, dest) => {
   const res = await fetch(url)
@@ -35,6 +54,6 @@ const fetchImg = async () => {
 }
 
 // run every 3 hrs
-schedule.scheduleJob("0 */3 * * *", () => {
-  fetchImg()
-})
+// schedule.scheduleJob("0 */3 * * *", () => {
+//   fetchImg()
+// })
