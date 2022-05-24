@@ -36,6 +36,7 @@ const fetchImg = async () => {
   const rnd = Math.floor(Math.random() * data.contents.length)
   const img = {
     id: data.contents[rnd].id,
+    class: data.contents[rnd].class,
     url: data.contents[rnd].image.large.url,
   }
 
@@ -53,9 +54,9 @@ const fetchImg = async () => {
   }
 }
 
-fetchImg()
+// fetchImg()
 
-// run every 3 hrs
-// schedule.scheduleJob("0 */3 * * *", () => {
-//   fetchImg()
-// })
+run every 3 hrs
+schedule.scheduleJob("0 */3 * * *", () => {
+  fetchImg()
+})
