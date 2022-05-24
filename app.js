@@ -56,7 +56,7 @@ const fetchImg = async () => {
 
 // fetchImg()
 
-run every 3 hrs
+// run every 3 hrs
 schedule.scheduleJob("0 */3 * * *", () => {
   fetchImg()
 })
