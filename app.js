@@ -19,18 +19,18 @@ const tweet = async () => {
     const mediaId = await client.v1.uploadMedia(media)
     if (src) {
       await client.v2.tweet({ text: src, media: { media_ids: [mediaId] } })
+      // delete media file
+      // set media and src back to null
+      // logs record.json to console - tweet successful
       fs.unlinkSync(media)
       src = null
       media = null
       logRecord()
     } if (!src) {
       await client.v2.tweet({ media: { media_ids: [mediaId] } })
-      // delete media file
       fs.unlinkSync(media)
-      // set media and src back to null
       src = null
       media = null
-      // logs record.json to console - tweet successful
       logRecord()
     }
   } catch (error) {
@@ -113,9 +113,7 @@ const fetchAssets = () => {
   }, 30000)
 }
 
-fetchAssets()
-
 // run every 3 hrs
-// schedule.scheduleJob("0 */3 * * *", () => {
-//   fetchAssets()
-// })
+schedule.scheduleJob("0 */3 * * *", () => {
+  fetchAssets()
+})
