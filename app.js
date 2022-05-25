@@ -17,14 +17,22 @@ const client = new TwitterApi({
 const tweet = async () => {
   try {
     const mediaId = await client.v1.uploadMedia(media)
-    await client.v2.tweet({ text: src ? src : null, media: { media_ids: [mediaId] } })
-    // delete media file
-    fs.unlinkSync(media)
-    // set media and src back to null
-    src = null
-    media = null
-    // logs record.json to console - tweet successful
-    logRecord()
+    if (src) {
+      await client.v2.tweet({ text: src, media: { media_ids: [mediaId] } })
+      fs.unlinkSync(media)
+      src = null
+      media = null
+      logRecord()
+    } if (!src) {
+      await client.v2.tweet({ media: { media_ids: [mediaId] } })
+      // delete media file
+      fs.unlinkSync(media)
+      // set media and src back to null
+      src = null
+      media = null
+      // logs record.json to console - tweet successful
+      logRecord()
+    }
   } catch (error) {
     console.log(error)
   }
