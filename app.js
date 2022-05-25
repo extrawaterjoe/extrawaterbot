@@ -105,7 +105,9 @@ const fetchAssets = () => {
   }, 30000)
 }
 
+fetchAssets()
+
 // run every 3 hrs
-schedule.scheduleJob("0 */3 * * *", () => {
-  fetchAssets()
-})
+// schedule.scheduleJob("0 */3 * * *", () => {
+//   fetchAssets()
+// })
