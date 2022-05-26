@@ -8,7 +8,6 @@ let src
 let media
 const record = JSON.parse(fs.readFileSync("./record.json", "utf8"))
 
-// logRecord function that logs the record.json file
 const logRecord = () => {
   console.log(record)
 }
@@ -25,8 +24,6 @@ const tweet = async () => {
     const mediaId = await client.v1.uploadMedia(media)
     if (src) {
       await client.v2.tweet({ text: src, media: { media_ids: [mediaId] } })
-      // delete media file
-      // set media and src back to null
       fs.unlinkSync(media)
       src = null
       media = null
@@ -71,14 +68,6 @@ const fetchAsset = async () => {
 }
 
 const saveAsset = asset => {
-  // const assetClass = {
-  //   Image: "img",
-  //   "Text": "txt",
-  //   "Link": "link",
-  //   "Media": "media",
-  //   Attachment: "attachments",
-  // }
-
   const assetType = {
     "image/jpeg": "jpg",
     "image/png": "jpg",
@@ -96,7 +85,7 @@ const saveAsset = asset => {
   }
 }
 
-////////////////////// soundcloud and bandcamp links //////////////////////
+/* soundcloud, youtube, and bandcamp links - for music */
 const fetchSound = async () => {
   const res = await fetch("http://api.are.na/v2/channels/ssssound-6zuyd9yymbq?page=1&per=1000")
   const data = await res.json()
@@ -105,34 +94,37 @@ const fetchSound = async () => {
     id: data.contents[rnd].id,
     url: data.contents[rnd].source.url,
     class: data.contents[rnd].class,
-    title: data.contents[rnd].generated_title,
+    title: data.contents[rnd].title,
   }
 
-  if (record.content.includes(sound.id)) {
-    fetchSound()
-  } else {
-    tweetSound(sound)
-  }
+  return sound
 }
 
-const tweetSound = async sound => {
-  console.log(sound)
-  try {
-    await client.v2.tweet({ text: `${sound.title} ${sound.url}` })
-    record.content.push(sound.id)
-    fs.writeFileSync("./record.json", JSON.stringify(record))
-    logRecord()
-  } catch (error) {
-    console.log(error)
+const tweetSound = async () => {
+  const sound = await fetchSound()
+
+  if (record.content.includes(sound.id)) {
+    tweetSound()
+    console.log('sound already tweeted, trying again...')
+  } else {
+    try {
+      await client.v2.tweet({ text: `${sound.title} ${sound.url}` })
+      record.content.push(sound.id)
+      fs.writeFileSync("./record.json", JSON.stringify(record))
+      console.log('sound tweeted:', sound.title)
+      logRecord()
+    } catch (error) {
+      console.log(error)
+    }
   }
 }
 
 // run every 2 hours at 10 minutes past the hour
-schedule.scheduleJob("10 */2 * * *", () => {
-  fetchAsset()
-})
+// schedule.scheduleJob("10 */2 * * *", () => {
+//   fetchAsset()
+// })
 
-// // run every 5 hrs at 15 minutes past the hour
-schedule.scheduleJob("15 */5 * * *", () => {
-  fetchSound()
-})
+// run every 5 hrs at 15 minutes past the hour
+// schedule.scheduleJob("15 */5 * * *", () => {
+//   tweetSound()
+// })
