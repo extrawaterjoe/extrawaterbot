@@ -111,7 +111,7 @@ const fetchSound = async () => {
   if (record.content.includes(sound.id)) {
     fetchSound()
   } else {
-    await tweetSound(sound)
+    tweetSound(sound)
   }
 }
 
@@ -127,14 +127,12 @@ const tweetSound = async sound => {
   }
 }
 
-// run every 3 hours at 10 minutes past the hour
-// schedule.scheduleJob("10 */3 * * *", () => {
-//   fetchAsset()
-// })
+// run every 2 hours at 10 minutes past the hour
+schedule.scheduleJob("10 */2 * * *", () => {
+  fetchAsset()
+})
 
-// // run every 5 hrs
-// schedule.scheduleJob("15 */5 * * *", () => {
-//   fetchSound()
-// })
-
-fetchAsset()
+// // run every 5 hrs at 15 minutes past the hour
+schedule.scheduleJob("15 */5 * * *", () => {
+  fetchSound()
+})
