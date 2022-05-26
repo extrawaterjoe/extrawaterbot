@@ -6,6 +6,12 @@ import "dotenv/config"
 
 let src
 let media
+const record = JSON.parse(fs.readFileSync("./record.json", "utf8"))
+
+// logRecord function that logs the record.json file
+const logRecord = () => {
+  console.log(record)
+}
 
 const client = new TwitterApi({
   appKey: process.env.APIKEY,
@@ -21,12 +27,12 @@ const tweet = async () => {
       await client.v2.tweet({ text: src, media: { media_ids: [mediaId] } })
       // delete media file
       // set media and src back to null
-      // logs record.json to console - tweet successful
       fs.unlinkSync(media)
       src = null
       media = null
       logRecord()
-    } if (!src) {
+    }
+    if (!src) {
       await client.v2.tweet({ media: { media_ids: [mediaId] } })
       fs.unlinkSync(media)
       src = null
@@ -65,55 +71,70 @@ const fetchAsset = async () => {
 }
 
 const saveAsset = asset => {
-  const assetClass = {
-    Image: "img",
-    // "Text": "txt",
-    // "Link": "link",
-    // "Media": "media",
-    Attachment: "attachments",
-  }
+  // const assetClass = {
+  //   Image: "img",
+  //   "Text": "txt",
+  //   "Link": "link",
+  //   "Media": "media",
+  //   Attachment: "attachments",
+  // }
+
   const assetType = {
     "image/jpeg": "jpg",
     "image/png": "jpg",
     "image/gif": "gif",
   }
 
-  const record = JSON.parse(fs.readFileSync("./record.json", "utf8"))
   if (record.content.includes(asset.id)) {
     fetchAsset()
   } else {
-    asset.class === "Attachment" ? src = `https://www.are.na/block/${asset.id}` : null
-    media = `./${assetClass[asset.class]}/asset.${assetType[asset.type]}`
+    asset.class === "Attachment" ? (src = `https://www.are.na/block/${asset.id}`) : null
+    media = `./img/asset.${assetType[asset.type]}`
     download(asset.url, media)
     record.content.push(asset.id)
     fs.writeFileSync("./record.json", JSON.stringify(record))
   }
 }
 
-// function that logs record.json
-const logRecord = () => {
-  try {
-    const record = JSON.parse(fs.readFileSync("./record.json", "utf8"))
-    console.log(record)
-  } catch (err) {
-    console.log(err)
+////////////////////// soundcloud and bandcamp links //////////////////////
+const fetchSound = async () => {
+  const res = await fetch("http://api.are.na/v2/channels/ssssound-6zuyd9yymbq?page=1&per=1000")
+  const data = await res.json()
+  const rnd = Math.floor(Math.random() * data.contents.length)
+  const sound = {
+    id: data.contents[rnd].id,
+    url: data.contents[rnd].source.url,
+    class: data.contents[rnd].class,
+    title: data.contents[rnd].generated_title,
+  }
+
+  if (record.content.includes(sound.id)) {
+    fetchSound()
+  } else {
+    await tweetSound(sound)
   }
 }
 
-// call fetchAsset() 3 times with interval of 5 seconds between 
-const fetchAssets = () => {
-  setTimeout(() => {
-    fetchAsset()
-  }, 10000)
-  setTimeout(() => {
-    fetchAsset()
-  }, 20000)
-  setTimeout(() => {
-    fetchAsset()
-  }, 30000)
+const tweetSound = async sound => {
+  console.log(sound)
+  try {
+    await client.v2.tweet({ text: `${sound.title} ${sound.url}` })
+    record.content.push(sound.id)
+    fs.writeFileSync("./record.json", JSON.stringify(record))
+    logRecord()
+  } catch (error) {
+    console.log(error)
+  }
 }
 
-// run every 3 hrs
-schedule.scheduleJob("0 */3 * * *", () => {
-  fetchAssets()
-})
+// run every 3 hours at 10 minutes past the hour
+// schedule.scheduleJob("10 */3 * * *", () => {
+//   fetchAsset()
+// })
+
+// // run every 5 hrs
+// schedule.scheduleJob("15 */5 * * *", () => {
+//   fetchSound()
+// })
+
+fetchAsset()
