@@ -120,11 +120,11 @@ const tweetSound = async () => {
 }
 
 // run every 2 hours at 10 minutes past the hour
-// schedule.scheduleJob("10 */2 * * *", () => {
-//   fetchAsset()
-// })
+schedule.scheduleJob("10 */2 * * *", () => {
+  fetchAsset()
+})
 
 // run every 5 hrs at 15 minutes past the hour
-// schedule.scheduleJob("15 */5 * * *", () => {
-//   tweetSound()
-// })
+schedule.scheduleJob("15 */5 * * *", () => {
+  tweetSound()
+})
