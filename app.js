@@ -85,7 +85,6 @@ const saveAsset = asset => {
   }
 }
 
-/* soundcloud, youtube, and bandcamp links - for music */
 const fetchSound = async () => {
   const res = await fetch("http://api.are.na/v2/channels/ssssound-6zuyd9yymbq?page=1&per=1000")
   const data = await res.json()
@@ -119,12 +118,12 @@ const tweetSound = async () => {
   }
 }
 
-// run every 2 hours at 10 minutes past the hour
+// every 2 hours at 10 minutes past the hour
 schedule.scheduleJob("10 */2 * * *", () => {
   fetchAsset()
 })
 
-// run every 5 hrs at 15 minutes past the hour
+// every 5 hrs at 15 minutes past the hour
 schedule.scheduleJob("15 */5 * * *", () => {
   tweetSound()
 })
