@@ -19,6 +19,8 @@ const client = new TwitterApi({
   accessSecret: process.env.ACCESSSECRET,
 })
 
+
+// visual asset tweet
 const tweet = async () => {
   try {
     const mediaId = await client.v1.uploadMedia(media)
@@ -64,16 +66,12 @@ const fetchAsset = async () => {
     attachment: data.contents[rnd].attachment?.url,
   }
 
-  saveAsset(asset)
-}
-
-const saveAsset = asset => {
   const assetType = {
     "image/jpeg": "jpg",
     "image/png": "jpg",
     "image/gif": "gif",
   }
-
+  
   if (record.content.includes(asset.id)) {
     fetchAsset()
   } else {
@@ -85,6 +83,7 @@ const saveAsset = asset => {
   }
 }
 
+// audio asset tweet - soundcloud, youtube, bandcamp
 const fetchSound = async () => {
   const res = await fetch("http://api.are.na/v2/channels/ssssound-6zuyd9yymbq?page=1&per=1000")
   const data = await res.json()
@@ -119,11 +118,11 @@ const tweetSound = async () => {
 }
 
 // every 2 hours at 10 minutes past the hour
-schedule.scheduleJob("10 */2 * * *", () => {
-  fetchAsset()
-})
+// schedule.scheduleJob("10 */2 * * *", () => {
+//   fetchAsset()
+// })
 
 // every 5 hrs at 15 minutes past the hour
-schedule.scheduleJob("15 */5 * * *", () => {
-  tweetSound()
-})
+// schedule.scheduleJob("15 */5 * * *", () => {
+//   tweetSound()
+// })
