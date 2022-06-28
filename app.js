@@ -20,7 +20,7 @@ const client = new TwitterApi({
 })
 
 
-// visual asset tweet
+// image or pdf tweet
 const tweet = async () => {
   try {
     const mediaId = await client.v1.uploadMedia(media)
@@ -43,6 +43,7 @@ const tweet = async () => {
   }
 }
 
+// downloads image, on finish the tweet function is called
 const download = async (url, dest) => {
   const res = await fetch(url)
   const file = fs.createWriteStream(dest)
@@ -53,6 +54,7 @@ const download = async (url, dest) => {
   })
 }
 
+// fetches either an image or a pdf from channel
 const fetchAsset = async () => {
   const res = await fetch("http://api.are.na/v2/channels/extra-water?page=1&per=1000")
   const data = await res.json()
